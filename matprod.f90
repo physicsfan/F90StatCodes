@@ -1,25 +1,25 @@
 module mat_stuff
 
-	contains
-
-    subroutine matprod(mat1, mat2, mprod, error_code)
-	implicit none
+contains
+  
+  subroutine matprod(mat1, mat2, mprod, error_code)
+    implicit none
     integer, intent(out) :: error_code
     real, intent(in) :: mat1(:,:), mat2(:,:)
     real, intent(out) :: mprod(:,:)
-
-	! check for matrix conformity
-	if(size(mat1,2) /= size(mat2,1)) then
-		mprod=0.0
-        error_code = 1
+    
+    ! check for matrix conformity
+    if(size(mat1,2) /= size(mat2,1)) then
+       mprod=0.0
+       error_code = 1
     else
-		mprod = matmul(mat1, mat2)
-        error_code = 0
+       mprod = matmul(mat1, mat2)
+       error_code = 0
     endif
-
-    end subroutine matprod
-
-    subroutine fill_with_uniforms(mat, lower, upper)
+    
+  end subroutine matprod
+  
+  subroutine fill_with_uniforms(mat, lower, upper)
     ! Fills the rank_one array vec with random numbers uniformly
     ! distributed from lower to upper, which default to 0.0 and
     ! 1.0, respectively
@@ -36,8 +36,8 @@ module mat_stuff
     if(present(upper)) b = upper
     call random_number(mat)
     mat = a + mat * (b - a)
-    end subroutine fill_with_uniforms
-
+  end subroutine fill_with_uniforms
+  
 end module mat_stuff
 
 
@@ -61,19 +61,17 @@ program mat_test
   call fill_with_uniforms(x, upper=b, lower=a)
   call fill_with_uniforms(y, upper=b, lower=a)
   
-
+  
   print "(/,A)", "Here is x:"
   do i = 1, rows1
-   print '(100f8.3)', (x(i,j), j = 1, columns1) 
+     print '(100f8.3)', (x(i,j), j = 1, columns1) 
   end do
-
+  
   print "(/,A)", "Here is y:"
   do i = 1, rows2
-   print '(100f8.3)', (y(i,j), j = 1, columns2) 
+     print '(100f8.3)', (y(i,j), j = 1, columns2) 
   end do
   
   deallocate(x,y)   ! not really necessary
-
-
-
+  
 end program mat_test
