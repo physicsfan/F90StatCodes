@@ -15,27 +15,22 @@ module mat_stuff
     real, intent(in), optional :: probability
     real :: answer(size(weights))
 	! declare locals    
-  	integer(kind=SELECTED_INT_KIND(9)) :: i, n, n_factorial, y, y_factorial, n_minus_y, n_minus_y_factorial
+  	integer :: i, n, n_factorial
     real :: p
 
     p = 0.5
+    n = maxval(weights)
+    answer = 0.0
     if(present(probability)) p = probability
-    n = size(weights)-1
-      
+  
 	! calculate n-factorial
   	n_factorial=factorial(n)
   
-  	do i=1,size(weights)
-		! calculate y-factorial
-  		y_factorial=factorial(weights(i))
-		! calcualte (n-y)-factorial
-  		n_minus_y=n-weights(i)
-		n_minus_y_factorial=factorial(n-weights(i))
-
-		! calculate f(y)
-    	answer=n_factorial * (p**weights(i) * (1.0-p)**n-weights(i)) & 
-        		/ (factorial(weights(i))*factorial(n-weights(i)))
-  	end do
+	! calculate f(y)
+    do i=1,size(weights) 
+      answer(i)=n_factorial*(p**weights(i)*(1.0-p)**(n-weights(i))) &
+    			/(factorial(weights(i))*factorial(n-weights(i)))
+    end do
 
 	end function binomial
 
@@ -157,6 +152,7 @@ program mat_test
   
   ! declare locals
   integer :: i, j, xRows, xColumns, wElements
+  integer, allocatable :: w(:)
   real :: a, b
   character(len=3) :: boundsWanted, weightsPresent
   real, allocatable :: x(:,:), vectorOfWeights(:), matProd(:,:)
@@ -173,6 +169,7 @@ program mat_test
   allocate(x(xRows,xColumns))
   allocate(vectorOfWeights(wElements))
   allocate(matProd(xColumns,xColumns))
+  allocate(w(wElements))
 
   ! select if user wants numbers between a particular range
   print '(A)', "Do you want explicit lower and upper bounds?"
@@ -194,9 +191,10 @@ program mat_test
     
     ! generate the vector of weights
 	do i=1,wElements
-    	vectorOfWeights(i) = 1.0/real(wElements)
+    	w(i) = i-1
     end do
-  	
+	vectorOfWeights = binomial(w) ! vector of weight taken from a binomial distribution
+    
     ! print out input matrix X 
   	print "(/,A)", "Here is X:"
   	do i = 1, xrows
