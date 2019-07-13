@@ -1,6 +1,7 @@
 program pick_random
   ! draws a random sample of size n without replacement from a population {1,2,...,N}
   ! for any N >= 1 and n <= N.
+  
   implicit none
   
   integer :: i, j, sample_size, population_size
