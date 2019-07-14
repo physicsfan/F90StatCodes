@@ -2,13 +2,19 @@ module mat_stuff
   
 contains
   
-  real function binomial(weights, probability) result(answer)
+  function binomial(weights, probability) result(answer)
     ! This program uses allocatable arrays to compute and print the 
     ! binomial probability mass function:
     !	
     !			f(y) = (n)p^y *(1 - p)^(n-y),		y=0,1,...,n
     !			       (y)
     !
+    ! This function returns an array of the entries for the mass function. For this
+    ! to work one must declare the return variable "answer" as an array of the correct
+    ! type where the size is set by the size of the input array "weights" which is
+    ! allocatable. Alternatively, to define a function which returns an array include the
+    ! function declaration inside the function if one does not use the explicit return
+    ! "answer"-> "real, dimension(size(weights)) :: binomial"
     implicit none
     ! declare variables
     integer, intent(in) :: weights(:)
