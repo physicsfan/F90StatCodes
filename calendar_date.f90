@@ -4,7 +4,7 @@ module calendar
   public
 
   integer, parameter :: month_string_length = 10
-  integer, parameter :: date_string_length = 18
+  integer, parameter :: date_string_length = 19
 
   type :: calendar_date_type
      character(len=month_string_length) :: month = "January"
@@ -69,7 +69,17 @@ module calendar
       type(calendar_date_type), intent(in) :: calendar_date
       ! declare locals
       character(len=date_string_length) :: date_string
+      character(len=2) :: sDay
+      character(len=4) :: sYear
 
+      ! print day and year to internal files to convert to strings
+      write(sDay, "(I2)") calendar_date%day
+      write(sYear,"(I4)") calendar_date%year
+
+      date_string = adjustr(calendar_date%month) // " " // adjustl(sDay) // ", " // adjustr(sYear)
+
+      ! output date_string
+      write(*,"(A)") adjustl(date_string)
       
     end subroutine output_date_string
 
@@ -79,8 +89,16 @@ module calendar
 !#############################################################################
   
   program calendar_test
+    ! This program tests the module calendar
     use calendar
     implicit none
+
+    type(calendar_date_type) :: date
+
+    
+    call get_current_date(date)
+
+    call output_date_string(date)
 
   end program calendar_test
     
