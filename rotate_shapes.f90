@@ -13,6 +13,7 @@ module rotate_shapes
   public :: circle_type
   public :: triangle_type
   public :: rotate
+  public :: print_shape
 
   ! define derived types
   type :: point_type
@@ -34,6 +35,12 @@ module rotate_shapes
      module procedure rotate_circle
      module procedure rotate_triangle
   end interface rotate
+
+  ! overload print subroutines
+  interface print_shape
+     module procedure print_circle
+     module procedure print_triangle
+  end interface print_shape
   
 contains
 
@@ -96,6 +103,29 @@ contains
     triangle%vertex3%y = pivot%y + (tv3x-pivot%x)*sin(theta) + (tv3y-pivot%y)*cos(theta)
     
   end subroutine rotate_triangle
+
+  subroutine print_circle(circle)
+    implicit none
+    ! declare arguments
+    type(circle_type), intent(in) :: circle
+
+    print "(/,A)", "Circle:"
+    print *, "Center:", circle%center%x, circle%center%y
+    print *, "Radius:", circle%radius
+
+  end subroutine print_circle
+
+  subroutine print_triangle(triangle)
+    implicit none
+    ! declare arguments
+    type(triangle_type), intent(in) :: triangle
+
+    print "(/,A)", "Triangle:"
+    print *, "Vertex1:", triangle%vertex1%x, triangle%vertex1%y
+    print *, "Vertex2:", triangle%vertex2%x, triangle%vertex2%y
+    print *, "Vertex3:", triangle%vertex3%x, triangle%vertex3%y
+    
+  end subroutine print_triangle
   
 end module rotate_shapes
 
@@ -129,14 +159,8 @@ program rotate_test
 
   ! print results before rotation
   print "(/,A,/)", "Before rotation:"
-  print "(A)", "Circle:"
-  print *, "Center:", circle%center%x, circle%center%y
-  print *, "Radius:", circle%radius
-
-  print "(/,A)", "Triangle:"
-  print *, "Vertex1:", triangle%vertex1%x, triangle%vertex1%y
-  print *, "Vertex2:", triangle%vertex2%x, triangle%vertex2%y
-  print *, "Vertex3:", triangle%vertex3%x, triangle%vertex3%y
+  call print_shape(circle)
+  call print_shape(triangle)
 
   ! perform rotation
   call rotate(circle, pivot, angle)
@@ -146,13 +170,7 @@ program rotate_test
   print "(/,A)", "After rotation:"
   print "(A8,f5.2,A12,f5.2)", "pivotx = ",pivot%x," pivoty = ",pivot%y
   print "(A7,f6.2)", "angle =",angle
-  print "(/,A)", "Circle:"
-  print *, "Center:", circle%center%x, circle%center%y
-  print *, "Radius:", circle%radius
-
-  print "(/,A)", "Triangle:"
-  print *, "Vertex1:", triangle%vertex1%x, triangle%vertex1%y
-  print *, "Vertex2:", triangle%vertex2%x, triangle%vertex2%y
-  print *, "Vertex3:", triangle%vertex3%x, triangle%vertex3%y
+  call print_shape(circle)
+  call print_shape(triangle)
 
 end program rotate_test
